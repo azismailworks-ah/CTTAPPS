@@ -1,110 +1,91 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
+
 <head>
-  <meta charset="UTF-8">
-  <title>Dashboard dengan Chart, Map & Table</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-    }
-    header {
-      background: #222;
-      color: #fff;
-      padding: 10px;
-      text-align: center;
-      font-size: 20px;
-    }
-    .container {
-      display: grid;
-      grid-template-columns: 1fr 1fr; /* dua kolom sama besar */
-      grid-template-rows: auto auto auto;  /* chart, map, table */
-      gap: 20px;
-      padding: 20px;
-    }
-    iframe {
-      width: 100%;
-      border: none;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    /* Chart */
-    #chart1, #chart2 {
-      height: 500px;
-    }
-    /* Map */
-    .map {
-      grid-column: 1 / -1;
-      height: 500px;
-    }
-    /* Table */
-    .table-box {
-      grid-column: 1 / -1;
-      height: 400px; /* tinggi kotak scroll */
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      overflow: hidden;
-      background: #fff;
-    }
-    .table-box iframe {
-      width: 100%;
-      height: 100%;
-    }
-    .clock {
-      text-align: center;
-      font-size: 24px;
-      font-weight: bold;
-      margin: 10px 0;
-      color: #333;
-    }
-  </style>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1">
+
+<title>CTT Login</title>
+
+<link
+rel="stylesheet"
+href="css/style.css">
+
 </head>
+
 <body>
-  <header>📊 HELPDESK DIOC VIP REPORTING</header>
 
-  <!-- Jam Digital -->
-  <div class="clock" id="clock"></div>
+<div class="container">
 
-  <div class="container">
-    <!-- Chart kiri -->
-    <iframe id="chart1" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vR4g7Oah-qL-ubWk5rKZXjrrWjHg_1lfAZgAOaZgLZA9w9uoCfCZ_MojoLymxhklXxGfV4NubNuAVNS/pubchart?oid=818770165&format=interactive"></iframe>
-    <!-- Chart kanan -->
-    <iframe id="chart2" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vR4g7Oah-qL-ubWk5rKZXjrrWjHg_1lfAZgAOaZgLZA9w9uoCfCZ_MojoLymxhklXxGfV4NubNuAVNS/pubchart?oid=249150676&format=interactive"></iframe>
-    <!-- Map selebar penuh -->
-    <iframe class="map" id="map" src="https://script.google.com/macros/s/AKfycbxjuAQC5cxCGVofXfJYFit2bCIl3l26OvSrl4s4NuDMeK_GjhUEuJiAV7-P_O43-UqWIg/exec"></iframe>
-    <!-- Table selebar penuh dengan scroll -->
-    <div class="table-box">
-      <iframe id="table" 
-        src="https://docs.google.com/spreadsheets/d/e/2PACX-1vR4g7Oah-qL-ubWk5rKZXjrrWjHg_1lfAZgAOaZgLZA9w9uoCfCZ_MojoLymxhklXxGfV4NubNuAVNS/pubhtml?gid=189502427&single=true">
-      </iframe>
-    </div>
-  </div>
+<div class="login-card">
 
-  <script>
-    // Jam digital realtime
-    function updateClock() {
-      const now = new Date();
-      const h = String(now.getHours()).padStart(2, '0');
-      const m = String(now.getMinutes()).padStart(2, '0');
-      const s = String(now.getSeconds()).padStart(2, '0');
-      document.getElementById('clock').textContent = `${h}:${m}:${s}`;
-    }
-    setInterval(updateClock, 1000);
-    updateClock();
+<div class="logo">
+CTT
+</div>
 
-    // Auto refresh iframe setiap 60 detik
-    function refreshIframes() {
-      ['chart1', 'chart2', 'map', 'table'].forEach(id => {
-        const iframe = document.getElementById(id);
-        if (iframe) {
-          const src = iframe.src;
-          iframe.src = ''; // kosongkan dulu
-          setTimeout(() => { iframe.src = src; }, 100); // reload ulang
-        }
-      });
-    }
-    setInterval(refreshIframes, 120000); // 120 detik
-  </script>
+<div class="subtitle">
+Customer Ticket Tracking
+</br>
+@AZH Automation
+</div>
+
+<div class="input-group">
+
+<label>
+Username
+</label>
+
+<input
+id="username"
+type="text">
+
+</div>
+
+<div class="input-group">
+
+<label>
+Password
+</label>
+
+<input
+id="password"
+type="password">
+
+</div>
+
+<button
+class="btn"
+onclick="login()">
+
+LOGIN
+
+</button>
+
+<div
+id="loading"
+class="loading">
+
+Loading...
+
+</div>
+
+<div
+id="error"
+class="error">
+
+</div>
+
+</div>
+
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/auth.js"></script>
+
 </body>
+
 </html>
