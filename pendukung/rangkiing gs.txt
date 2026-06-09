@@ -1,0 +1,546 @@
+function getTopFSO(req){
+
+  const session =
+  validateToken(
+    req.token
+  );
+    
+  if(!session){
+
+    return {
+      status:false,
+      message:'Session Expired'
+    };
+  }
+
+  const userArea =
+  String(
+    session.area || ''
+  ).trim();
+
+  const sh =
+  getSheet(
+    CONFIG.UPDATE_SHEET
+  );
+
+  const data =
+  sh.getDataRange()
+  .getValues();
+
+  const today =
+  new Date();
+
+  const limitDate =
+  new Date();
+
+  limitDate.setDate(
+    today.getDate() - 30
+  );
+
+  let ranking = {};
+
+  for(
+    let i=1;
+    i<data.length;
+    i++
+  ){
+
+    const row =
+    data[i];
+
+    const timestamp =
+    new Date(
+      row[0]
+    );
+
+    if(
+      timestamp <
+      limitDate
+    ){
+
+      continue;
+
+    }
+
+    const fullname =
+    String(
+      row[2] || ''
+    ).trim();
+
+    const tt =
+    String(
+      row[3] || ''
+    ).trim();
+
+    const area =
+    String(
+      row[6] || ''
+    ).trim();
+
+    if(
+      userArea !== 'ALL' &&
+      area !== userArea
+    ){
+
+      continue;
+
+    }
+
+    if(
+      !ranking[fullname]
+    ){
+
+      ranking[
+        fullname
+      ] = {
+
+        fullname:
+        fullname,
+
+        updates:0,
+
+        ttSet:
+        {}
+
+      };
+
+    }
+
+    ranking[
+      fullname
+    ]
+    .updates++;
+
+    ranking[
+      fullname
+    ]
+    .ttSet[tt] =
+    true;
+
+  }
+
+  let result = [];
+
+  Object.keys(
+    ranking
+  ).forEach(
+
+    function(name){
+
+      result.push({
+
+        fullname:
+        name,
+
+        ttHandling:
+
+        Object.keys(
+
+          ranking[name]
+          .ttSet
+
+        ).length,
+
+        updates:
+
+        ranking[name]
+        .updates
+
+      });
+
+    }
+
+  );
+
+  result.sort(
+
+    function(a,b){
+
+      if(
+
+        b.ttHandling !==
+        a.ttHandling
+
+      ){
+
+        return (
+
+          b.ttHandling -
+          a.ttHandling
+
+        );
+
+      }
+
+      return (
+
+        b.updates -
+        a.updates
+
+      );
+
+    }
+
+  );
+
+  return {
+
+    status:true,
+
+    data:
+    result.slice(
+      0,
+      5
+    )
+
+  };
+
+}
+
+function getAreaRanking(){
+
+  const sh =
+  getSheet(
+    CONFIG.RAW_SHEET
+  );
+
+  const data =
+  sh.getDataRange()
+  .getValues();
+
+  let areas = {};
+
+  for(
+    let i=1;
+    i<data.length;
+    i++
+  ){
+
+    const row =
+    data[i];
+
+    const region =
+    String(
+      row[6] || ''
+    ).trim();
+
+    const area =
+    mapArea(
+      region
+    );
+
+    if(!area){
+
+    continue;
+
+    }
+
+    const escalateTo =
+    String(
+      row[16] || ''
+    ).trim();
+
+    const slaStatus =
+    String(
+      row[21] || ''
+    ).trim();
+
+    const statusNoc =
+    String(
+      row[22] || ''
+    ).trim();
+
+    if(i <= 10){
+
+      Logger.log(
+
+        'REGION=' + region +
+
+        ' | AREA=' + area +
+
+        ' | ESC=' + escalateTo +
+
+        ' | SLA=' + slaStatus +
+
+        ' | STATUS=' + statusNoc
+
+      );
+
+    }
+
+    if(
+      escalateTo !==
+      'FSO'
+    ){
+
+      continue;
+
+    }
+
+    if(
+
+      statusNoc.toUpperCase()
+      !==
+      'OPEN'
+
+    ){
+
+      continue;
+
+    }
+
+    if(
+      !areas[area]
+    ){
+
+      areas[
+        area
+      ] = {
+
+        total:0,
+
+        meet:0
+
+      };
+
+    }
+
+    areas[
+      area
+    ]
+    .total++;
+
+    if(
+      slaStatus ===
+      'Meet SLA'
+    ){
+
+      areas[
+        area
+      ]
+      .meet++;
+
+    }
+
+  }
+
+  let result = [];
+
+  Object.keys(
+    areas
+  ).forEach(
+
+    function(area){
+
+      const total =
+      areas[area]
+      .total;
+
+      const meet =
+      areas[area]
+      .meet;
+
+      const achievement =
+
+      total > 0
+
+      ?
+
+      Number(
+
+        (
+          meet /
+          total
+        ) * 100
+
+      ).toFixed(1)
+
+      :
+
+      0;
+
+      result.push({
+
+        area:
+        area,
+
+        total:
+        total,
+
+        meet:
+        meet,
+
+        achievement:
+        achievement
+
+      });
+
+    }
+
+  );
+
+  result.sort(
+
+    function(a,b){
+
+      return (
+
+        Number(
+          b.achievement
+        ) -
+
+        Number(
+          a.achievement
+        )
+
+      );
+
+    }
+
+  );
+
+  return {
+
+    status:true,
+
+    data:result
+
+  };
+
+}
+
+function testTopFSO(){
+
+  const sh =
+  getSheet(
+    CONFIG.UPDATE_SHEET
+  );
+
+  const data =
+  sh.getDataRange()
+  .getValues();
+
+  let ranking = {};
+
+  for(
+    let i=1;
+    i<data.length;
+    i++
+  ){
+
+    const row =
+    data[i];
+
+    const fullname =
+    String(
+      row[2] || ''
+    ).trim();
+
+    const tt =
+    String(
+      row[3] || ''
+    ).trim();
+
+    if(
+      !ranking[fullname]
+    ){
+
+      ranking[
+        fullname
+      ] = {
+
+        fullname:
+        fullname,
+
+        updates:0,
+
+        ttSet:{}
+
+      };
+
+    }
+
+    ranking[
+      fullname
+    ]
+    .updates++;
+
+    ranking[
+      fullname
+    ]
+    .ttSet[tt] =
+    true;
+
+  }
+
+  let result = [];
+
+  Object.keys(
+    ranking
+  ).forEach(
+
+    function(name){
+
+      result.push({
+
+        fullname:
+        name,
+
+        ttHandling:
+
+        Object.keys(
+
+          ranking[name]
+          .ttSet
+
+        ).length,
+
+        updates:
+
+        ranking[name]
+        .updates
+
+      });
+
+    }
+
+  );
+
+  result.sort(
+
+    function(a,b){
+
+      if(
+
+        b.ttHandling !==
+        a.ttHandling
+
+      ){
+
+        return (
+
+          b.ttHandling -
+          a.ttHandling
+
+        );
+
+      }
+
+      return (
+
+        b.updates -
+        a.updates
+
+      );
+
+    }
+
+  );
+
+  Logger.log(
+    JSON.stringify(
+      result
+    )
+  );
+
+}

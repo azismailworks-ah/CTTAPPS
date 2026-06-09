@@ -1,0 +1,124 @@
+function buildFSORangking(){
+
+  const sh =
+  getSheet(
+    CONFIG.UPDATE_SHEET
+  );
+
+  const data =
+  sh.getDataRange()
+  .getValues();
+
+  let ranking = {};
+
+  for(
+    let i=1;
+    i<data.length;
+    i++
+  ){
+
+    const fullname =
+    String(
+      data[i][2] || ''
+    ).trim();
+
+    const tt =
+    String(
+      data[i][3] || ''
+    ).trim();
+
+    if(!fullname){
+
+      continue;
+
+    }
+
+    if(
+      !ranking[fullname]
+    ){
+
+      ranking[fullname] = {
+
+        fullname:
+        fullname,
+
+        updates:0,
+
+        ttSet:{}
+
+      };
+
+    }
+
+    ranking[fullname]
+    .updates++;
+
+    ranking[fullname]
+    .ttSet[tt] =
+    true;
+
+  }
+
+  let result = [];
+
+  Object.keys(
+    ranking
+  ).forEach(
+
+    function(name){
+
+      result.push({
+
+        fullname:name,
+
+        ttHandling:
+
+        Object.keys(
+
+          ranking[name]
+          .ttSet
+
+        ).length,
+
+        updates:
+
+        ranking[name]
+        .updates
+
+      });
+
+    }
+
+  );
+
+  result.sort(
+
+    function(a,b){
+
+      if(
+        b.ttHandling !==
+        a.ttHandling
+      ){
+
+        return (
+          b.ttHandling -
+          a.ttHandling
+        );
+
+      }
+
+      return (
+        b.updates -
+        a.updates
+      );
+
+    }
+
+  );
+
+  return result.slice(
+    0,
+    5
+  );
+
+}

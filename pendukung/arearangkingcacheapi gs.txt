@@ -1,0 +1,45 @@
+function getAreaRangkingCache(){
+
+  const sh =
+  getSheet(
+    'AreaRangkingCache'
+  );
+
+  const data =
+  sh.getDataRange()
+  .getValues();
+
+  let result = [];
+
+  data.forEach(function(row){
+
+    result.push({
+
+      area:row[0],
+
+      total:Number(
+        row[1] || 0
+      ),
+
+      meet:Number(
+        row[2] || 0
+      ),
+
+      achievement:
+      Number(
+        row[3] || 0
+      )
+
+    });
+
+  });
+
+  return {
+
+    status:true,
+
+    data:result
+
+  };
+
+}

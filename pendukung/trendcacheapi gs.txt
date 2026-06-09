@@ -1,0 +1,129 @@
+function getTrendCache(){
+
+  const sh =
+  getSheet(
+    'TrendCache'
+  );
+
+  const data =
+  sh.getDataRange()
+  .getValues();
+
+  let trendData = [];
+
+  data.forEach(function(row){
+
+    trendData.push({
+
+      date:row[0],
+
+      totalOpen:
+      Number(row[1] || 0),
+
+      overSla:
+      Number(row[2] || 0),
+
+      meetSla:
+      Number(row[3] || 0)
+
+    });
+
+  });
+
+  let latest = {
+
+    totalOpen:0,
+    overSla:0,
+    meetSla:0,
+    compliance:0,
+    previous:null
+
+  };
+
+  if(trendData.length){
+
+    const current =
+
+    trendData[
+      trendData.length - 1
+    ];
+
+    latest.totalOpen =
+    current.totalOpen;
+
+    latest.overSla =
+    current.overSla;
+
+    latest.meetSla =
+    current.meetSla;
+
+    latest.compliance =
+
+    latest.totalOpen > 0
+
+    ?
+
+    (
+      latest.meetSla /
+      latest.totalOpen *
+      100
+    ).toFixed(1)
+
+    :
+
+    0;
+
+    if(
+      trendData.length > 1
+    ){
+
+      const previous =
+
+      trendData[
+        trendData.length - 2
+      ];
+
+      latest.previous = {
+
+        totalOpen:
+        previous.totalOpen,
+
+        overSla:
+        previous.overSla,
+
+        meetSla:
+        previous.meetSla,
+
+        compliance:
+
+        previous.totalOpen > 0
+
+        ?
+
+        (
+          previous.meetSla /
+          previous.totalOpen *
+          100
+        ).toFixed(1)
+
+        :
+
+        0
+
+      };
+
+    }
+
+  }
+
+  return {
+
+    status:true,
+
+    data:trendData,
+
+    kpi:latest
+
+  };
+
+}

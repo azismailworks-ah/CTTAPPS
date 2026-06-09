@@ -1,0 +1,99 @@
+function getSummaryCache(
+session
+){
+
+  const sh =
+  getSheet(
+    'DashboardCache'
+  );
+
+  const data =
+  sh.getDataRange()
+  .getValues();
+
+  const area =
+
+  String(
+    session.area || 'ALL'
+  )
+  .toUpperCase();
+
+  let selected = null;
+
+  for(
+    let i=1;
+    i<data.length;
+    i++
+  ){
+
+    const rowArea =
+
+    String(
+      data[i][0] || ''
+    )
+    .toUpperCase();
+
+    if(
+      rowArea === area
+    ){
+
+      selected =
+      data[i];
+
+      break;
+
+    }
+
+  }
+
+  if(
+    !selected
+  ){
+
+    selected =
+    data[1] || [];
+
+  }
+
+  return {
+
+    status:true,
+
+    open:
+    Number(
+      selected[1] || 0
+    ),
+
+    p1:
+    Number(
+      selected[2] || 0
+    ),
+
+    p2:
+    Number(
+      selected[3] || 0
+    ),
+
+    hvc:
+    Number(
+      selected[4] || 0
+    ),
+
+    meetSla:
+    Number(
+      selected[5] || 0
+    ),
+
+    overSla:
+    Number(
+      selected[6] || 0
+    ),
+
+    achievement:
+    Number(
+      selected[7] || 0
+    )
+
+  };
+
+}

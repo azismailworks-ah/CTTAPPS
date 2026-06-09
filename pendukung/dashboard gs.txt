@@ -1,0 +1,215 @@
+function getDashboard(req,session){
+
+const keyword =
+String(
+req.keyword || ''
+)
+.toLowerCase();
+
+const page =
+Number(req.page || 1);
+
+const pageSize =
+CONFIG.PAGE_SIZE;
+
+const sh =
+getSheet(
+CONFIG.RAW_SHEET
+);
+
+const data =
+sh.getDataRange()
+.getValues();
+
+let result=[];
+
+for(let i=1;i<data.length;i++){
+
+
+const row=data[i];
+
+const tt=row[0];
+
+const type=row[24];
+
+const siteId=row[4];
+
+const siteName=row[5];
+
+const region=row[6];
+
+const aging =
+Math.floor(
+ Number(row[19]) || 0
+);
+
+const escalateTo =
+String(row[16] || '')
+.trim()
+.toUpperCase();
+
+const statusNOC =
+String(row[22] || '')
+.trim()
+.toUpperCase();
+
+if(statusNOC !== 'OPEN'){
+  continue;
+}
+
+if(escalateTo !== 'FSO'){
+  continue;
+}
+
+const area =
+mapArea(region);
+
+if(
+
+  session.role!='ADMIN'
+
+  &&
+
+  session.area!='ALL'
+
+  &&
+
+  area!=session.area
+
+){
+
+  continue;
+
+}
+
+if(keyword){
+
+  const found =
+
+  String(tt)
+  .toLowerCase()
+  .includes(keyword)
+
+  ||
+
+  String(siteId)
+  .toLowerCase()
+  .includes(keyword);
+
+  if(!found){
+
+    continue;
+
+  }
+
+}
+
+  const openDateFormatted =
+  Utilities.formatDate(
+  new Date(row[2]),
+  Session.getScriptTimeZone(),
+  "dd-MMM-yyyy"
+  );
+  
+result.push({
+
+  tt:tt,
+
+  siteId:siteId,
+
+  siteName:siteName,
+
+  p2c:
+  row[39] || '',
+
+  p2cDate:
+  row[40] || '',
+
+  region:region,
+
+  area:area,
+
+  severity:row[1],
+
+  openDate:openDateFormatted,
+
+  typeUrgent:row[24],
+
+  aging:aging,
+
+  agingLabel:
+  aging + ' Days',
+
+  priority:
+  getPriority(
+    row[24],
+    aging
+  ),
+
+  escalateTo:
+  escalateTo
+
+});
+
+
+}
+
+result.sort(function(a,b){
+
+
+if(
+  a.priority !=
+  b.priority
+){
+
+  return
+  a.priority=='P1'
+  ? -1
+  : 1;
+
+}
+
+return Number(
+  b.aging
+) -
+Number(
+  a.aging
+);
+
+
+});
+
+const total =
+result.length;
+
+const start =
+(page-1)
+*
+pageSize;
+
+const end =
+start
++
+pageSize;
+
+return {
+
+
+status:true,
+
+total:total,
+
+page:page,
+
+pageSize:pageSize,
+
+data:
+result.slice(
+  start,
+  end
+)
+
+
+};
+
+}

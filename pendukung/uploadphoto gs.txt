@@ -1,0 +1,60 @@
+function uploadPhotos(req){
+
+  try{
+
+    const folder =
+    DriveApp.getFolderById(
+      CONFIG.DRIVE_FOLDER_ID
+    );
+
+    let urls = [];
+
+    req.files.forEach(function(file){
+
+      const bytes =
+      Utilities.base64Decode(
+        file.base64
+      );
+
+      const blob =
+      Utilities.newBlob(
+        bytes,
+        file.mimeType,
+        'photo_' +
+        new Date().getTime()
+      );
+
+      const driveFile =
+      folder.createFile(
+        blob
+      );
+
+      urls.push(
+        driveFile.getUrl()
+      );
+
+    });
+
+    return {
+
+      status:true,
+
+      urls:urls
+
+    };
+
+  }
+
+  catch(err){
+
+    return {
+
+      status:false,
+
+      error:String(err)
+
+    };
+
+  }
+
+}

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1">
+
+<title>
+CTT Ticket Detail
+</title>
+
+<link
+rel="stylesheet"
+href="css/style.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+  <button
+    class="logout-btn"
+    onclick="backDashboard()">
+
+    ← Back
+
+  </button>
+
+  <br><br>
+
+  <div
+    id="ticketHeader"
+    class="ticket-detail-header">
+
+    Loading...
+
+  </div>
+
+  <br>
+
+  <div
+    id="ticketInfo"
+    class="detail-card">
+
+  </div>
+
+  <br>
+
+  <div
+    id="summaryCard"
+    class="detail-card">
+
+  </div>
+
+  <br>
+
+  <div
+    id="resolutionCard"
+    class="detail-card">
+
+  </div>
+
+  <br>
+
+  <div
+    id="historyCard"
+    class="detail-card">
+
+    <h2>
+      Update History
+    </h2>
+
+    <br>
+
+    <div
+      id="historyList">
+
+      Loading...
+
+    </div>
+
+  </div>
+
+  <br>
+
+  <div
+    id="photoCard"
+    class="detail-card">
+
+    <h2>
+      Justification Photos
+    </h2>
+
+    <br>
+
+    <div
+      id="photoGallery">
+
+      No Photos
+
+    </div>
+
+  </div>
+
+  <br>
+
+  <div
+    id="updateCard"
+    class="detail-card">
+
+    <h2>
+      New Update
+    </h2>
+
+    <br>
+
+    <label>
+      Update Progress
+    </label>
+
+    <textarea
+      id="updateProgress">
+
+    </textarea>
+
+    <br><br>
+
+    <label>
+      Action Taken
+    </label>
+
+    <textarea
+      id="actionTaken">
+
+    </textarea>
+
+    <br><br>
+
+    <label>
+      ETA Recovery
+    </label>
+
+    <input
+      type="datetime-local"
+      id="etaRecovery">
+
+    <br><br>
+
+    <label>
+      Upload Photos
+    </label>
+
+    <input
+      type="file"
+      id="photoUpload"
+      multiple
+      accept="image/*">
+
+    <small>
+
+      Maximum 5 Photos
+
+    </small>
+	
+    <label>
+    
+    <input
+    type="checkbox"
+    id="proposeClose">
+    
+    Propose To Close
+    
+    </label>
+	
+    <br><br>
+
+    <button
+      class="btn"
+      onclick="submitUpdate()">
+
+      SUBMIT UPDATE
+
+    </button>
+
+  </div>
+
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/ticket.js"></script>
+
+<div
+id="submitOverlay"
+class="loading-overlay">
+
+  <div class="loading-box">
+
+    <div class="spinner"></div>
+
+    <div class="loading-text">
+
+      Submitting Update...
+
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+
+</html>

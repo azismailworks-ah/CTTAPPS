@@ -1,0 +1,124 @@
+function getHistory(req){
+
+const tt =
+String(
+req.tt || ''
+).trim();
+
+const sh =
+getSheet(
+CONFIG.UPDATE_SHEET
+);
+
+const data =
+sh.getDataRange()
+.getValues();
+
+let result=[];
+
+for(
+let i=1;
+i<data.length;
+i++
+){
+
+
+const row =
+data[i];
+
+if(
+
+  String(
+    row[3]
+  ).trim()
+
+  !==
+
+  tt
+
+){
+
+  continue;
+
+}
+
+result.push({
+
+  timestamp:
+  Utilities.formatDate(
+
+    new Date(
+      row[0]
+    ),
+
+    Session.getScriptTimeZone(),
+
+    'dd-MMM-yyyy HH:mm'
+
+  ),
+
+  username:
+  row[1],
+
+  fullname:
+  row[2],
+
+  priority:
+  row[7],
+
+  progress:
+  row[8],
+
+  actionTaken:
+  row[9],
+
+  etaRecovery:
+  row[10],
+
+  photos:
+  row[11]
+
+});
+
+
+}
+
+result.sort(
+
+
+function(a,b){
+
+  return (
+
+    new Date(
+      b.timestamp
+    )
+
+    -
+
+    new Date(
+      a.timestamp
+    )
+
+  );
+
+}
+
+
+);
+
+return {
+
+
+status:true,
+
+total:
+result.length,
+
+data:
+result
+
+
+};
+
+}

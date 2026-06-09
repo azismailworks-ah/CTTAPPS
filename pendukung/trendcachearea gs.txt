@@ -1,0 +1,107 @@
+function refreshTrendCacheArea(){
+
+  const snapshotSheet =
+  getSheet(
+    'DailySnapshotArea'
+  );
+
+  const cacheSheet =
+  getSheet(
+    'TrendCacheArea'
+  );
+
+  const data =
+  snapshotSheet
+  .getDataRange()
+  .getValues();
+
+  let rows = [];
+
+  const areas =
+
+  [
+    'ALL',
+    'SMTR',
+    'JAVA',
+    'JAYA',
+    'KSMP'
+  ];
+
+  areas.forEach(
+
+    function(area){
+
+      let areaRows =
+
+      data
+      .filter(
+
+        r =>
+
+        String(r[0])
+        .toUpperCase()
+
+        ===
+
+        area
+
+      );
+
+      areaRows.sort(
+
+        function(a,b){
+
+          return new Date(a[1])
+          -
+          new Date(b[1]);
+
+        }
+
+      );
+
+      areaRows =
+
+      areaRows.slice(-7);
+
+      areaRows.forEach(
+
+        function(row){
+
+          rows.push([
+
+            row[0],
+            row[1],
+            row[2],
+            row[3],
+            row[4]
+
+          ]);
+
+        }
+
+      );
+
+    }
+
+  );
+
+  cacheSheet.clearContents();
+
+  if(rows.length){
+
+    cacheSheet
+    .getRange(
+
+      1,
+      1,
+      rows.length,
+      5
+
+    )
+    .setValues(
+      rows
+    );
+
+  }
+
+}

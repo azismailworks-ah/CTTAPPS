@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1">
+
+<title>
+CTT Dashboard
+</title>
+
+<link
+rel="stylesheet"
+href="css/style.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="header-user">
+
+    <div>
+
+      <h1>
+        CTT Dashboard
+      </h1>
+
+      <span id="userInfo">
+      </span>
+
+    </div>
+	
+	<div id="lastRefreshInfo"
+     class="last-refresh">
+
+	🟢 Loading refresh time...
+
+	</div>
+
+    <button
+      class="logout-btn"
+      onclick="logout()">
+
+      Logout
+
+    </button>
+
+  </div>
+
+  <br>
+
+  <div class="kpi-grid">
+
+    <div class="kpi-card">
+
+      <div>
+        OPEN
+      </div>
+
+      <h2 id="totalOpen">
+        0
+      </h2>
+
+    </div>
+
+    <div class="kpi-card">
+
+      <div>
+        P1
+      </div>
+
+      <h2 id="totalP1">
+        0
+      </h2>
+
+    </div>
+
+    <div class="kpi-card">
+
+      <div>
+        P2
+      </div>
+
+      <h2 id="totalP2">
+        0
+      </h2>
+
+    </div>
+
+    <div class="kpi-card">
+
+      <div>
+        HVC
+      </div>
+
+      <h2 id="totalHVC">
+        0
+      </h2>
+
+    </div>
+
+  </div>
+
+<div class="trend-card">
+
+  <div class="trend-header">
+
+    <h2>
+      KPI Trend Last 7 Days
+    </h2>
+
+<div class="trend-summary">
+
+  <div class="trend-kpi">
+
+    <div id="kpiOpenValue">
+      0
+    </div>
+
+    <div>
+      Open
+    </div>
+
+    <div id="kpiOpenTrend">
+      -
+    </div>
+
+  </div>
+
+  <div class="trend-kpi">
+
+    <div id="kpiMeetValue">
+      0
+    </div>
+
+    <div>
+      Meet SLA
+    </div>
+
+    <div id="kpiMeetTrend">
+      -
+    </div>
+
+  </div><div class="search-container">
+
+  <div class="trend-kpi">
+
+    <div id="kpiOverValue">
+      0
+    </div>
+
+    <div>
+      Over SLA
+    </div>
+
+    <div id="kpiOverTrend">
+      -
+    </div>
+
+  </div>
+
+  <div class="trend-kpi">
+
+    <div id="kpiComplianceValue">
+      0%
+    </div>
+
+    <div>
+      SLA Achievement
+    </div>
+
+    <div id="kpiComplianceTrend">
+      -
+    </div>
+
+  </div>
+
+</div>
+
+    <div class="trend-legend">
+
+      <span class="legend-item">
+
+        <span class="legend-box meet">
+        </span>
+
+        Meet SLA
+
+      </span>
+
+      <span class="legend-item">
+
+        <span class="legend-box over">
+        </span>
+
+        Over SLA
+
+      </span>
+
+      <span class="legend-item">
+
+        <span class="legend-line">
+        </span>
+
+        Total Open
+
+      </span>
+
+    </div>
+
+  </div>
+
+  <canvas
+    id="trendChart">
+  </canvas>
+
+</div>
+
+<div class="ranking-grid">
+
+  <div class="ranking-card">
+
+    <div class="ranking-title">
+
+      🏆 Top FSO Last 30 Days
+
+    </div>
+
+    <div id="fsoRankingList">
+
+      Loading...
+
+    </div>
+
+  </div>
+
+  <div class="ranking-card">
+
+    <div class="ranking-title">
+
+      🏆 Area SLA Rangking
+
+    </div>
+
+    <div id="areaRangkingList">
+
+      Loading...
+
+    </div>
+
+  </div>
+
+</div>
+
+  <div class="search-container">
+  
+    <input
+      id="searchKeyword"
+      type="text"
+      placeholder="Search TT / Site ID"
+	  onkeypress="handleSearchEnter(event)">
+	  
+    <button
+      class="search-btn"
+      onclick="searchTickets()">
+  
+      SEARCH
+  
+    </button>
+  
+  </div>
+
+  <div id="adminAreaContainer" style="display:none;">
+
+    <select
+      id="areaFilter"
+      onchange="searchTickets()">
+
+      <option value="ALL">
+        ALL
+      </option>
+
+      <option value="SMTR">
+        SMTR
+      </option>
+
+      <option value="JAVA">
+        JAVA
+      </option>
+
+      <option value="JAYA">
+        JAYA
+      </option>
+
+      <option value="KSMP">
+        KSMP
+      </option>
+
+    </select>
+
+  </div>
+
+  <br>
+
+  <div id="ticketList">
+
+    Loading...
+
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="js/config.js"></script>
+<script src="js/dashboard.js"></script>
+
+<div
+id="loadingOverlay"
+class="loading-overlay">
+
+  <div class="loading-box">
+
+    <div class="spinner">
+    </div>
+
+    <div class="loading-text">
+
+      Searching Ticket...
+
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+
+</html>

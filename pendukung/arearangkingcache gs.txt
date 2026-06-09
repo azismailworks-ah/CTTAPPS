@@ -1,0 +1,55 @@
+function refreshAreaRangkingCache(){
+
+  const result =
+  getAreaRanking();
+
+  const sh =
+  getSheet(
+    'AreaRangkingCache'
+  );
+
+  sh.clearContents();
+
+  if(
+    !result.status
+  ){
+
+    return;
+
+  }
+
+  const rows =
+  result.data.map(
+
+    function(item){
+
+      return [
+
+        item.area,
+        item.total,
+        item.meet,
+        item.achievement
+
+      ];
+
+    }
+
+  );
+
+  if(rows.length){
+
+    sh.getRange(
+
+      1,
+      1,
+      rows.length,
+      4
+
+    )
+    .setValues(
+      rows
+    );
+
+  }
+
+}

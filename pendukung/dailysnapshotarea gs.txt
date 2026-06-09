@@ -1,0 +1,185 @@
+function saveDailySnapshotArea(){
+
+  const sh =
+  getSheet(
+    CONFIG.RAW_SHEET
+  );
+
+  const data =
+  sh.getDataRange()
+  .getValues();
+
+  const stats = {
+
+    ALL:{
+      totalOpen:0,
+      overSla:0,
+      meetSla:0
+    },
+
+    SMTR:{
+      totalOpen:0,
+      overSla:0,
+      meetSla:0
+    },
+
+    JAVA:{
+      totalOpen:0,
+      overSla:0,
+      meetSla:0
+    },
+
+    JAYA:{
+      totalOpen:0,
+      overSla:0,
+      meetSla:0
+    },
+
+    KSMP:{
+      totalOpen:0,
+      overSla:0,
+      meetSla:0
+    }
+
+  };
+
+  for(
+    let i=1;
+    i<data.length;
+    i++
+  ){
+
+    const row =
+    data[i];
+
+    const escalateTo =
+    String(
+      row[16] || ''
+    )
+    .trim()
+    .toUpperCase();
+
+    const statusNOC =
+    String(
+      row[22] || ''
+    )
+    .trim()
+    .toUpperCase();
+
+    if(
+      statusNOC !== 'OPEN'
+    ){
+      continue;
+    }
+
+    if(
+      escalateTo !== 'FSO'
+    ){
+      continue;
+    }
+
+    const region =
+    String(
+      row[6] || ''
+    );
+
+    const area =
+    mapArea(region);
+
+    stats.ALL.totalOpen++;
+
+    if(stats[area]){
+
+      stats[area].totalOpen++;
+
+    }
+
+    const slaStatus =
+    String(
+      row[21] || ''
+    ).trim();
+
+    if(
+      slaStatus ===
+      'Over SLA'
+    ){
+
+      stats.ALL.overSla++;
+
+      if(stats[area]){
+
+        stats[area].overSla++;
+
+      }
+
+    }
+
+    else if(
+      slaStatus ===
+      'Meet SLA'
+    ){
+
+      stats.ALL.meetSla++;
+
+      if(stats[area]){
+
+        stats[area].meetSla++;
+
+      }
+
+    }
+
+  }
+
+  const today =
+  Utilities.formatDate(
+    new Date(),
+    Session.getScriptTimeZone(),
+    'yyyy-MM-dd'
+  );
+
+  const snapshotSheet =
+  getSheet(
+    'DailySnapshotArea'
+  );
+
+  const values =
+  snapshotSheet
+  .getDataRange()
+  .getValues();
+
+  const alreadyExist =
+  values.some(
+    r =>
+    r[0] === 'ALL'
+    &&
+    String(r[1])
+    .indexOf(today) > -1
+  );
+
+  if(alreadyExist){
+
+    return;
+
+  }
+
+  Object.keys(stats)
+  .forEach(function(area){
+
+    snapshotSheet.appendRow([
+
+      area,
+
+      today,
+
+      stats[area].totalOpen,
+
+      stats[area].overSla,
+
+      stats[area].meetSla
+
+    ]);
+
+  });
+
+}

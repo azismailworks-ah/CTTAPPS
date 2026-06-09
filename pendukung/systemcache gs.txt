@@ -1,0 +1,20 @@
+function getSystemCache(){
+
+  const sh =
+  getSheet(
+    'SystemCache'
+  );
+
+  return {
+
+    status:true,
+
+    lastRefresh:
+
+    sh.getRange(
+      'B1'
+    ).getValue()
+
+  };
+
+}

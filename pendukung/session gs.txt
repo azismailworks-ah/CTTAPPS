@@ -1,0 +1,152 @@
+function createSession(user){
+
+const sheet =
+getSheet(
+CONFIG.SESSION_SHEET
+);
+
+const token =
+generateUUID() +
+generateUUID();
+
+const loginTime =
+now();
+
+const expireTime =
+new Date(
+
+
+loginTime.getTime()
+
++
+
+(
+  CONFIG.SESSION_HOURS *
+  60 *
+  60 *
+  1000
+)
+
+
+);
+
+sheet.appendRow([
+
+
+token,
+
+user.username,
+
+user.fullname,
+
+user.area,
+
+user.role,
+
+loginTime,
+
+expireTime,
+
+'ACTIVE'
+
+
+]);
+
+return token;
+
+}
+
+function validateToken(token){
+
+const sheet =
+getSheet(
+CONFIG.SESSION_SHEET
+);
+
+const data =
+sheet.getDataRange()
+.getValues();
+
+const current =
+now();
+
+for(let i=1;i<data.length;i++){
+
+
+const row =
+data[i];
+
+if(
+
+  row[0] == token &&
+
+  row[7] == 'ACTIVE'
+
+){
+
+  const expire =
+  new Date(row[6]);
+
+  if(expire > current){
+
+    return {
+
+      status:true,
+
+      username:row[1],
+
+      fullname:row[2],
+
+      area:row[3],
+
+      role:row[4]
+
+    };
+
+  }
+
+}
+
+
+}
+
+return {
+
+
+status:false
+
+
+};
+
+}
+
+function logout(token){
+
+const sheet =
+getSheet(
+CONFIG.SESSION_SHEET
+);
+
+const data =
+sheet.getDataRange()
+.getValues();
+
+for(let i=1;i<data.length;i++){
+
+
+if(data[i][0] == token){
+
+  sheet
+  .getRange(i+1,8)
+  .setValue('LOGOUT');
+
+  return true;
+
+}
+
+
+}
+
+return false;
+
+}

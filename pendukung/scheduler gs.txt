@@ -1,0 +1,42 @@
+function refreshAllCache(){
+
+  try{
+
+    refreshDashboardCache();
+
+    refreshTrendCache();
+
+    refreshAreaRangkingCache();
+
+    refreshFSORangkingCache();
+
+    const sh =
+    getSheet(
+      'SystemCache'
+    );
+
+    sh.getRange(
+      'A1'
+    ).setValue(
+      'LAST_REFRESH'
+    );
+
+    sh.getRange(
+      'B1'
+    ).setValue(
+      new Date()
+    );
+
+    Logger.log(
+      'ALL CACHE REFRESHED'
+    );
+
+  }catch(err){
+
+    Logger.log(
+      err.toString()
+    );
+
+  }
+
+}

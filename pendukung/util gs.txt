@@ -1,0 +1,56 @@
+function json(data){
+
+return ContentService
+.createTextOutput(
+JSON.stringify(data)
+)
+.setMimeType(
+ContentService.MimeType.JSON
+);
+
+}
+
+function getSheet(sheetName){
+
+return SpreadsheetApp
+.getActiveSpreadsheet()
+.getSheetByName(sheetName);
+
+}
+
+function formatDateTime(date){
+
+return Utilities.formatDate(
+
+
+date,
+
+Session.getScriptTimeZone(),
+
+'yyyy-MM-dd HH:mm:ss'
+
+
+);
+
+}
+
+function generateUUID(){
+
+return Utilities.getUuid()
+.replace(/-/g,'');
+
+}
+
+function now(){
+
+return new Date();
+
+}
+
+function isEmpty(v){
+
+return v === null ||
+v === undefined ||
+v === '';
+
+}

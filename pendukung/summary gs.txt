@@ -1,0 +1,96 @@
+function getSummary(session){
+
+const sh =
+getSheet(
+CONFIG.RAW_SHEET
+);
+
+const data =
+sh.getDataRange()
+.getValues();
+
+let totalOpen = 0;
+let totalP1 = 0;
+let totalP2 = 0;
+let totalHVC = 0;
+
+for(let i=1;i<data.length;i++){
+
+
+const row = data[i];
+
+const type = row[24];
+const region = row[6];
+const aging = row[19];
+const escalateTo =
+String(row[16] || '')
+.trim()
+.toUpperCase();
+
+const statusNOC =
+String(row[22] || '')
+.trim()
+.toUpperCase();
+
+if(statusNOC !== 'OPEN'){
+  continue;
+}
+
+if(escalateTo !== 'FSO'){
+  continue;
+}
+
+const area =
+mapArea(region);
+
+if(
+  session.role != 'ADMIN'
+  &&
+  session.area != 'ALL'
+  &&
+  area != session.area
+){
+  continue;
+}
+
+totalOpen++;
+
+if(
+  String(type)
+  .toUpperCase() == 'HVC'
+){
+  totalHVC++;
+}
+
+const priority =
+getPriority(
+  type,
+  aging
+);
+
+if(priority=='P1'){
+  totalP1++;
+}else{
+  totalP2++;
+}
+
+
+}
+
+return {
+
+
+status:true,
+
+totalOpen:totalOpen,
+
+totalP1:totalP1,
+
+totalP2:totalP2,
+
+totalHVC:totalHVC
+
+
+};
+
+}

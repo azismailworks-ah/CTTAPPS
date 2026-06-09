@@ -1,0 +1,196 @@
+function refreshDashboardCache(){
+
+  const rawSheet =
+  getSheet(
+    CONFIG.RAW_SHEET
+  );
+
+  const cacheSheet =
+  getSheet(
+    'DashboardCache'
+  );
+
+  const data =
+  rawSheet
+  .getDataRange()
+  .getValues();
+
+  let openCount = 0;
+  let p1Count = 0;
+  let p2Count = 0;
+  let hvcCount = 0;
+
+  let meetSLA = 0;
+  let overSLA = 0;
+
+  for(
+    let i=1;
+    i<data.length;
+    i++
+  ){
+
+    const row =
+    data[i];
+
+    const type =
+    row[24];
+
+    const region =
+    row[6];
+
+    const aging =
+    row[19];
+
+    const escalateTo =
+    String(
+      row[16] || ''
+    )
+    .trim()
+    .toUpperCase();
+
+    const statusNOC =
+    String(
+      row[22] || ''
+    )
+    .trim()
+    .toUpperCase();
+
+    const sla =
+    String(
+      row[21] || ''
+    )
+    .trim();
+
+    if(
+      statusNOC !== 'OPEN'
+    ){
+      continue;
+    }
+
+    if(
+      escalateTo !== 'FSO'
+    ){
+      continue;
+    }
+
+    openCount++;
+
+    if(
+      String(type)
+      .toUpperCase()
+      === 'HVC'
+    ){
+      hvcCount++;
+    }
+
+    const priority =
+    getPriority(
+      type,
+      aging
+    );
+
+    if(
+      priority === 'P1'
+    ){
+
+      p1Count++;
+
+    }else{
+
+      p2Count++;
+
+    }
+
+    if(
+      sla === 'Meet SLA'
+    ){
+
+      meetSLA++;
+
+    }
+
+    if(
+      sla === 'Over SLA'
+    ){
+
+      overSLA++;
+
+    }
+
+  }
+
+  const achievement =
+  openCount > 0
+
+  ?
+
+  (
+    meetSLA /
+    openCount *
+    100
+  ).toFixed(1)
+
+  :
+
+  0;
+
+  const rows = [
+
+    [
+      'OPEN',
+      openCount,
+      new Date()
+    ],
+
+    [
+      'P1',
+      p1Count,
+      new Date()
+    ],
+
+    [
+      'P2',
+      p2Count,
+      new Date()
+    ],
+
+    [
+      'HVC',
+      hvcCount,
+      new Date()
+    ],
+
+    [
+      'MEET_SLA',
+      meetSLA,
+      new Date()
+    ],
+
+    [
+      'OVER_SLA',
+      overSLA,
+      new Date()
+    ],
+
+    [
+      'SLA_ACHIEVEMENT',
+      achievement,
+      new Date()
+    ]
+
+  ];
+
+  cacheSheet.clearContents();
+
+  cacheSheet
+  .getRange(
+    1,
+    1,
+    rows.length,
+    3
+  )
+  .setValues(
+    rows
+  );
+
+}

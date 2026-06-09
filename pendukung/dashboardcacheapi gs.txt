@@ -1,0 +1,52 @@
+function getSummaryCache(){
+
+  const sh =
+  getSheet(
+    'DashboardCache'
+  );
+
+  const data =
+  sh.getDataRange()
+  .getValues();
+
+  let result = {};
+
+  data.forEach(
+
+    function(row){
+
+      result[
+        row[0]
+      ] = row[1];
+
+    }
+
+  );
+
+  return {
+
+    status:true,
+
+    open:
+    Number(
+      result.OPEN || 0
+    ),
+
+    p1:
+    Number(
+      result.P1 || 0
+    ),
+
+    p2:
+    Number(
+      result.P2 || 0
+    ),
+
+    hvc:
+    Number(
+      result.HVC || 0
+    )
+
+  };
+
+}

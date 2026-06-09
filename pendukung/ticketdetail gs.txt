@@ -1,0 +1,143 @@
+function getTicketDetail(req){
+
+const tt =
+String(
+req.tt || ''
+).trim();
+
+const sh =
+getSheet(
+CONFIG.RAW_SHEET
+);
+
+const data =
+sh.getDataRange()
+.getValues();
+
+for(
+let i=1;
+i<data.length;
+i++
+){
+
+
+const row =
+data[i];
+
+if(
+
+  String(
+    row[0]
+  ).trim()
+
+  ===
+
+  tt
+
+){
+
+  const aging =
+  Math.floor(
+    Number(row[19]) || 0
+  );
+
+  return {
+
+    status:true,
+
+    data:{
+
+      tt:
+      row[0],
+
+      severity:
+      row[1],
+
+      openDate:
+      Utilities.formatDate(
+
+        new Date(
+          row[2]
+        ),
+
+        Session.getScriptTimeZone(),
+
+        'dd-MMM-yyyy'
+
+      ),
+
+      type:
+      row[3],
+
+      typeUrgent:
+      String(
+        row[24] || ''
+      ).trim(),
+
+      siteId:
+      row[4],
+
+      siteName:
+      String(
+        row[5] || ''
+      ).trim(),
+
+      region:
+      row[6],
+
+      area:
+      mapArea(
+        row[6]
+      ),
+
+      summaryIssue:
+      row[7],
+
+      resolution:
+      row[13],
+
+      aging:
+      aging,
+
+      agingLabel:
+      aging + ' Days',
+
+      sla:
+      row[21],
+
+      statusNOC:
+      row[22],
+
+      escalateTo:
+      row[16],
+
+      priority:
+      getPriority(
+
+        row[24],
+
+        aging
+
+      )
+
+    }
+
+  };
+
+}
+
+
+}
+
+return {
+
+
+status:false,
+
+message:
+'Ticket Not Found'
+
+
+};
+
+}

@@ -1,0 +1,217 @@
+function doPost(e){
+
+try{
+
+
+const req =
+JSON.parse(
+  e.postData.contents
+);
+
+const action =
+req.action;
+
+if(
+  action ==
+  'login'
+){
+
+  return json(
+    login(req)
+  );
+
+}
+
+if(
+  action ==
+  'validate'
+){
+
+  return json(
+    validateToken(
+      req.token
+    )
+  );
+
+}
+
+const session =
+validateToken(
+  req.token
+);
+
+if(
+  !session.status
+){
+
+  return json({
+
+    status:false,
+
+    message:
+    'Session Expired'
+
+  });
+
+}
+
+switch(action){
+
+  case 'trend':
+
+    return json(
+      getTrend(
+        session
+      )
+    );
+
+  case 'trendCache':
+
+    return json(
+      getTrendCache()
+    );
+
+  case 'fsoRanking':
+
+    return json(
+      getTopFSO(req)
+    );
+
+  case 'areaRangking':
+
+    return json(
+      getAreaRangking()
+    );
+
+  case 'areaRangkingCache':
+
+    return json(
+      getAreaRangkingCache()
+    );
+
+  case 'logout':
+
+    return json({
+
+      status:
+      logout(
+        req.token
+      )
+
+    });
+
+  case 'summary':
+
+    return json(
+      getSummary(
+        session
+      )
+    );
+
+  case 'summaryCache':
+
+    return json(
+      getSummaryCache(
+        session
+      )
+    );
+
+  case 'systemCache':
+
+    return json(
+      getSystemCache()
+    );
+
+  case 'dashboard':
+
+    return json(
+      getDashboard(
+        req,
+        session
+      )
+    );
+
+  case 'detail':
+
+    return json(
+      getTicketDetail(
+        req,
+        session
+      )
+    );
+
+  case 'history':
+
+    return json(
+      getHistory(
+        req,
+        session
+      )
+    );
+
+  case 'upload':
+
+    return json(
+      uploadPhotos(
+        req,
+        session
+      )
+    );
+
+  case 'submit':
+
+    return json(
+      submitUpdate(
+        req,
+        session
+      )
+    );
+
+  default:
+
+    return json({
+
+      status:false,
+
+      message:
+      'Unknown Action'
+
+    });
+
+}
+
+
+}
+
+catch(err){
+
+
+return json({
+
+  status:false,
+
+  error:
+  String(err)
+
+});
+
+
+}
+
+}
+
+function doGet(){
+
+return json({
+
+
+status:true,
+
+app:'CTT',
+
+version:'1.0'
+
+
+});
+
+}

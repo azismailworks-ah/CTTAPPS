@@ -1,0 +1,29 @@
+function getPriority(type,aging){
+
+type =
+String(type)
+.trim()
+.toUpperCase();
+
+aging =
+Number(aging) || 0;
+
+if(type === 'HVC'){
+
+
+return 'P1';
+
+
+}
+
+if(aging >= 2){
+
+
+return 'P1';
+
+
+}
+
+return 'P2';
+
+}

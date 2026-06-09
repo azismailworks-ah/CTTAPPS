@@ -1,0 +1,257 @@
+function saveDailySnapshot(){
+
+  const sh =
+  getSheet(
+    CONFIG.RAW_SHEET
+  );
+
+  const data =
+  sh.getDataRange()
+  .getValues();
+
+  let totalOpen = 0;
+  let overSla = 0;
+  let meetSla = 0;
+
+  for(
+    let i=1;
+    i<data.length;
+    i++
+  ){
+
+    const row =
+    data[i];
+
+    const aging =
+    Number(row[19]) || 0;
+
+    const sla =
+    Number(row[21]) || 0;
+
+    const escalateTo =
+    String(
+      row[16] || ''
+    )
+    .trim()
+    .toUpperCase();
+
+    const statusNOC =
+    String(
+      row[22] || ''
+    )
+    .trim()
+    .toUpperCase();
+
+    if(
+      statusNOC !== 'OPEN'
+    ){
+      continue;
+    }
+
+    if(
+      escalateTo !== 'FSO'
+    ){
+      continue;
+    }
+
+  totalOpen++;
+
+  const slaStatus =
+  String(
+    row[21] || ''
+  ).trim();
+
+  if(
+    slaStatus ==
+    'Over SLA'
+  ){
+
+    overSla++;
+
+  }
+
+  else if(
+    slaStatus ==
+    'Meet SLA'
+  ){
+
+    meetSla++;
+
+  }
+
+}
+
+  const snapshotSheet =
+  getSheet(
+    CONFIG.DAILY_SNAPSHOT_SHEET
+  );
+
+  const today =
+  Utilities.formatDate(
+
+    new Date(),
+
+    Session.getScriptTimeZone(),
+
+    'yyyy-MM-dd'
+
+  );
+
+  const lastRow =
+  snapshotSheet.getLastRow();
+
+  if(lastRow > 1){
+
+    const lastDate =
+
+    String(
+
+      snapshotSheet
+      .getRange(
+        lastRow,
+        1
+      )
+      .getValue()
+
+    );
+
+    if(
+      lastDate.indexOf(
+        today
+      ) > -1
+    ){
+
+      return;
+
+    }
+
+  }
+
+  snapshotSheet.appendRow([
+
+    today,
+
+    totalOpen,
+
+    overSla,
+
+    meetSla
+
+  ]);
+
+}
+
+function getTrend7Days(){
+
+  const sh =
+  getSheet(
+    CONFIG.DAILY_SNAPSHOT_SHEET
+  );
+
+  const data =
+  sh.getDataRange()
+  .getValues();
+
+  let result = [];
+
+  const start =
+  Math.max(
+    1,
+    data.length - 7
+  );
+
+  for(
+    let i=start;
+    i<data.length;
+    i++
+  ){
+
+    result.push({
+
+      date:
+      data[i][0],
+
+      totalOpen:
+      Number(
+        data[i][1]
+      ) || 0,
+
+      overSla:
+      Number(
+        data[i][2]
+      ) || 0,
+
+      meetSla:
+      Number(
+        data[i][3]
+      ) || 0
+
+    });
+
+  }
+
+  const latest =
+  result.length > 0
+  ?
+  result[result.length-1]
+  :
+  {
+    totalOpen:0,
+    overSla:0,
+    meetSla:0
+  };
+
+  const previous =
+  result.length > 1
+  ?
+  result[result.length-2]
+  :
+  null;
+
+  const compliance =
+
+  latest.totalOpen > 0
+
+  ?
+
+  Number(
+
+    (
+      latest.meetSla /
+      latest.totalOpen
+    ) * 100
+
+  ).toFixed(1)
+
+  :
+
+  0;
+
+  return {
+
+    status:true,
+
+    data:result,
+
+    kpi:{
+
+      totalOpen:
+      latest.totalOpen,
+
+      meetSla:
+      latest.meetSla,
+
+      overSla:
+      latest.overSla,
+
+      compliance:
+      compliance,
+
+      previous:
+      previous
+
+    }
+
+  };
+
+}

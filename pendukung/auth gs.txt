@@ -1,0 +1,95 @@
+function login(req){
+
+const username =
+String(req.username || '')
+.trim();
+
+const password =
+String(req.password || '')
+.trim();
+
+const sheet =
+getSheet(
+CONFIG.USER_SHEET
+);
+
+const data =
+sheet.getDataRange()
+.getValues();
+
+for(let i=1;i<data.length;i++){
+
+
+const row =
+data[i];
+
+const dbUser =
+String(row[0]).trim();
+
+const dbPass =
+String(row[1]).trim();
+
+const active =
+String(row[5])
+.trim()
+.toUpperCase();
+
+if(
+
+  dbUser == username &&
+
+  dbPass == password &&
+
+  active == 'Y'
+
+){
+
+  const token =
+  createSession({
+
+    username:row[0],
+
+    fullname:row[2],
+
+    area:row[3],
+
+    role:row[4]
+
+  });
+
+  return {
+
+    status:true,
+
+    token:token,
+
+    user:{
+
+      username:row[0],
+
+      fullname:row[2],
+
+      area:row[3],
+
+      role:row[4]
+
+    }
+
+  };
+
+}
+
+
+}
+
+return {
+
+
+status:false,
+
+message:'Invalid Login'
+
+
+};
+
+}

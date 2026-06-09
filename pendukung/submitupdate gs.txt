@@ -1,0 +1,95 @@
+function submitUpdate(
+req,
+session
+){
+
+const lock =
+LockService
+.getDocumentLock();
+
+lock.waitLock(
+30000
+);
+
+try{
+
+const now =
+new Date();
+
+const sh =
+getSheet(
+  CONFIG.UPDATE_SHEET
+);
+
+sh.appendRow([
+
+  new Date(),
+
+  session.username,
+
+  session.fullname,
+
+  req.tt,
+
+  req.siteId,
+
+  req.region,
+
+  req.area,
+
+  req.priority,
+
+  req.updateProgress,
+
+  req.actionTaken,
+
+  req.etaRecovery,
+
+  req.photoUrls || '',
+
+  req.proposeClose
+  ? 'YES'
+  : '',
+
+  req.proposeClose
+  ? now
+  : ''
+
+]);
+
+return {
+
+  status:true,
+
+  message:
+  'Update Saved'
+
+};
+
+
+}
+
+catch(err){
+
+
+return {
+
+  status:false,
+
+  error:
+  String(err)
+
+};
+
+
+}
+
+finally{
+
+
+lock.releaseLock();
+
+
+}
+
+}
