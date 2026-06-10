@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1">
+
+<title>
+HDNOC Operations Portal
+</title>
+
+<link
+rel="stylesheet"
+href="css/style.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="header-user">
+
+    <div>
+
+      <h1>
+        HDNOC Operations Portal
+      </h1>
+
+      <span id="userInfo">
+      </span>
+
+    </div>
+
+    <button
+      class="logout-btn"
+      onclick="logout()">
+
+      Logout
+
+    </button>
+
+  </div>
+
+  <br>
+
+  <div class="portal-grid">
+  
+    <div class="portal-card ctt-card">
+  
+      <div class="portal-header">
+  
+        <span class="portal-icon">
+          📋
+        </span>
+  
+        <span class="portal-title">
+          CTT
+        </span>
+  
+      </div>
+  
+      <div
+        class="portal-open"
+        id="cttOpen">
+  
+        --
+  
+      </div>
+  
+      <div class="portal-label">
+  
+        OPEN TICKETS
+  
+      </div>
+  
+      <div
+        class="portal-mini-kpi"
+        id="cttMiniKpi">
+  
+        Loading...
+  
+      </div>
+  
+      <button
+        class="portal-btn"
+        onclick="openCTT()">
+  
+        Enter Module →
+  
+      </button>
+  
+    </div>
+  
+    <div class="portal-card traffic-card">
+  
+      <div class="portal-header">
+  
+        <span class="portal-icon">
+          📶
+        </span>
+  
+        <span class="portal-title">
+          Traffic Degradation
+        </span>
+  
+      </div>
+  
+      <div class="portal-open">
+  
+        --
+  
+      </div>
+  
+      <div class="portal-label">
+  
+        COMING SOON
+  
+      </div>
+  
+      <div class="portal-coming">
+  
+        Under Development
+  
+      </div>
+  
+      <button
+        class="portal-btn"
+        onclick="openTraffic()">
+  
+        Enter Module →
+  
+      </button>
+  
+    </div>
+
+</div>
+
+
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/home.js"></script>
+
+</body>
+
+</html>
