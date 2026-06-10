@@ -137,9 +137,8 @@ function openCTT(){
 
 function openTraffic(){
 
-  alert(
-    'Traffic Degradation Module Coming Soon'
-  );
+  location.href =
+  'traffic.html';
 
 }
 
