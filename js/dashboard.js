@@ -676,70 +676,97 @@ function renderTrendKPI(kpi){
   setTrend(
     'kpiOpenTrend',
     kpi.totalOpen -
-    kpi.previous.totalOpen
+    kpi.previous.totalOpen,
+    true
   );
-
+  
   setTrend(
     'kpiMeetTrend',
     kpi.meetSla -
-    kpi.previous.meetSla
+    kpi.previous.meetSla,
+    false
   );
-
+  
   setTrend(
     'kpiOverTrend',
     kpi.overSla -
-    kpi.previous.overSla
+    kpi.previous.overSla,
+    true
   );
-
+  
   setTrend(
     'kpiComplianceTrend',
-  
-    parseFloat(
-      kpi.compliance
-    )
-  
+    parseFloat(kpi.compliance)
     -
-  
-    parseFloat(
-      kpi.previous.compliance
-    )
+    parseFloat(kpi.previous.compliance),
+    false
   );
 }
 
-function setTrend(id,value){
+function setTrend(
+id,
+value,
+lowerIsBetter
+){
 
   const el =
   document.getElementById(id);
 
-  if(value > 0){
+  if(value === 0){
 
-    el.innerHTML =
-    '▲ +' + value;
-
-    el.style.color =
-    '#22c55e';
-
-  }
-
-  else if(value < 0){
-
-    el.innerHTML =
-    '▼ ' + value;
-
-    el.style.color =
-    '#ef4444';
-
-  }
-
-  else{
-
-    el.innerHTML =
-    '-';
+    el.innerHTML = '-';
 
     el.style.color =
     '#94a3b8';
 
+    return;
+
   }
+
+  const isGood =
+
+  lowerIsBetter
+
+  ?
+
+  value < 0
+
+  :
+
+  value > 0;
+
+  const arrow =
+
+  value > 0
+
+  ?
+
+  '▲'
+
+  :
+
+  '▼';
+
+  const absValue =
+  Math.abs(value);
+
+  el.innerHTML =
+
+  arrow +
+  ' ' +
+  absValue;
+
+  el.style.color =
+
+  isGood
+
+  ?
+
+  '#22c55e'
+
+  :
+
+  '#ef4444';
 
 }
 
