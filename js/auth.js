@@ -66,7 +66,7 @@ async function login(){
       );
 
       location.href =
-      'dashboard.html';
+      'home.html';
 
     }else{
 
