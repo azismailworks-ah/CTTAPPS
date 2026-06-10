@@ -1046,3 +1046,10 @@ function formatP2CDate(value){
   );
 
 }
+
+function goHome(){
+
+  location.href =
+  'home.html';
+
+}
