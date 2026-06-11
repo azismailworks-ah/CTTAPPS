@@ -951,3 +951,5 @@ function renderPhotos(data){
   html ||
 
   '<div>No Photos</div>';
+
+}
