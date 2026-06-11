@@ -1,5 +1,5 @@
 const API_URL =
-'https://script.google.com/macros/s/AKfycbxRGjR7FiISpYlcW0902D2ER7045zY25UuHTyVA_hdB5Y5oaycHJzOcNCdPNSm-EcYD/exec';
+'https://script.google.com/macros/s/AKfycbxyhAlJG2mJqUpfy_kW9FVpsJiomSTqlGv-YOERn1KSTkaxK4srh_CMwSo_1TWD-qOO/exec';
 
 const APP_NAME = 'CTT';
 
