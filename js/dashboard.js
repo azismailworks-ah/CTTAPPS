@@ -309,6 +309,20 @@ data.forEach(function(item){
 
     </div>
 
+    <div class="ticket-reference">
+    
+      TT NOC :
+      ${item.ttNoc || '-'}
+    
+    </div>
+    
+    <div class="ticket-reference">
+    
+      WO FSO :
+      ${item.ttFso || '-'}
+    
+    </div>
+
     <div>
 
       ${item.siteName}
